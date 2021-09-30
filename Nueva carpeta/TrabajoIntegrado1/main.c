@@ -6,20 +6,19 @@
 
 typedef struct nodo{
     int cantApariciones;
-    char palabra[10];   //s1=00000; s2=00001
+    char palabra[10];
     struct nodo * sig;
 }nodo;
 
 typedef struct nodo* TLista;
 
-typedef struct nodoSF{// nodo ShannonFano
+typedef struct nodoSF{
     float probabilidad;
     char simbolo[10];
     char codificacion[20];
-    struct nodoSF * sig;
 } nodoSF;
 
-typedef nodoSF * TListaSF;
+
 
 void CargaLista(TLista *L, int cantCaracteres,int *cantPalabras);
 void AgregaPalabra(TLista *L, char pal[]);
@@ -31,9 +30,10 @@ int Valor(char simbolo[10]);
 void IncisoA();
 void IncisoB();
 void IncisoD();
-void OrdenaPorProbabilidad(TLista *L,int cantTotalApariciones,TListaSF *LSF);
-void MuestraListaSF(TListaSF L);
-void ShannonFano(TListaSF L, int i);
+void OrdenaPorProbabilidad(TLista *L,int cantTotalApariciones,nodoSF vector[],int *n);
+void MuestraSF(nodoSF vec[],int n);
+void ShannonFano(nodoSF vector[], int limInf, int limSup);
+void ReconstruyeArch(nodoSF vector[], int n, int cantCaracteres,char nombre_Arch[20]);
 
 int main()
 {
@@ -41,7 +41,7 @@ int main()
     //Menu
     do{
         system("cls");
-        printf("\nIngrese letra de inciso a ejecutar (a, b, c) o f para salir: ");
+        printf("\nIngrese letra de inciso a ejecutar (a, b, d) o f para salir: ");
         scanf("%c",&opcion);
         switch (opcion){
         case 'a':
@@ -50,27 +50,18 @@ int main()
         case 'b':
             IncisoB();
         break;
-        case 'c':
-            //IncisoA();
-        break;
         case 'd':
             IncisoD();
         break;
         }
     }while(opcion!='f');
 
-
-
-
-
-
     return 0;
 }
 
 void IncisoD(){
-
     TLista Palabras5=NULL,Palabras7=NULL,Palabras9=NULL;
-    TListaSF ShannonFano5=NULL;//,ShannonFano7=NULL,ShannonFano9=NULL;
+    nodoSF ShannonFano5[1000],ShannonFano7[1000],ShannonFano9[1000];
     int cantPal5,cantPal7,cantPal9;
     int escenario;
 
@@ -79,93 +70,136 @@ void IncisoD(){
 
     switch(escenario){
     case 1:
-        CargaLista(&Palabras5,5,&cantPal5);
-        OrdenaPorProbabilidad(&Palabras5,cantPal5,&ShannonFano5);
-        //OrdenaPorApariciones(&Palabras5);
-        MuestraListaSF(ShannonFano5);
-        //ShannonFano();
         printf("\nEscenario 1: Palabras codigo de 5 digitos");
+        CargaLista(&Palabras5,5,&cantPal5);
+        int n5;
+        OrdenaPorProbabilidad(&Palabras5,cantPal5,ShannonFano5,&n5);
+        ShannonFano(ShannonFano5,0,n5);
+        printf("\nLa codificacion resultante de Shannon-Fano es:");
+        MuestraSF(ShannonFano5,n5);
+        ReconstruyeArch(ShannonFano5,n5,5,"reconstruccion_caso1.txt");
     break;
     case 2:
-        CargaLista(&Palabras7,7,&cantPal7);
-        //OrdenaPorApariciones(&Palabras7);
         printf("\nEscenario 2: Palabras codigo de 7 digitos");
+        CargaLista(&Palabras7,7,&cantPal7);
+        int n7;
+        OrdenaPorProbabilidad(&Palabras7,cantPal7,ShannonFano7,&n7);
+        ShannonFano(ShannonFano7,0,n7);
+        printf("\nLa codificacion resultante de Shannon-Fano es:");
+        MuestraSF(ShannonFano7,n7);
+        ReconstruyeArch(ShannonFano7,n7,7,"reconstruccion_caso2.txt");
     break;
     case 3:
-        CargaLista(&Palabras9,9,&cantPal9);
-        //OrdenaPorApariciones(&Palabras9);
         printf("\nEscenario 3: Palabras codigo de 9 digitos");
+        CargaLista(&Palabras9,9,&cantPal9);
+        int n9;
+        OrdenaPorProbabilidad(&Palabras9,cantPal9,ShannonFano9,&n9);
+        ShannonFano(ShannonFano9,0,n9);
+        printf("\nLa codificacion resultante de Shannon-Fano es:");
+        MuestraSF(ShannonFano9,n9);
+        ReconstruyeArch(ShannonFano9,n9,9,"reconstruccion_caso3.txt");
     break;
     }
     getch();
-
 }
 
-                            //int i=0;
-void ShannonFano(TListaSF L, int i){
-    //L->codificacion[i]='1';
-    TListaSF act=L;
-    float acum=0;
-    while(act!=NULL){
-        acum+=act->probabilidad;
-
-
+int posSimbolo(char simbolo[10],nodoSF vector[],int n){
+    int i=0;
+    while(i<n && strcmp(simbolo,vector[i].simbolo)!=0){
+        i++;
     }
-    if(i==0){
-    }
-
-}
-void MuestraListaSF(TListaSF L){
-
-    while(L!=NULL){
-        printf("\n[%s]=%6.4f",L->simbolo, L->probabilidad);
-        L=L->sig;
-    }
+    return i;
 }
 
+void ReconstruyeArch(nodoSF vector[], int n, int cantCaracteres,char nombre_Arch[20]){
+    FILE *archt,*archtnuevo;
+    archt=fopen("datos para tp1.txt","rt");
+    char aux,palabra[20]="";
+    int i=-1,pos;
+    if(archt==NULL){
+        printf("No existe el archivo");
+    }
+    else{
+        archtnuevo=fopen(nombre_Arch,"wt");
+        while(fscanf(archt,"%c",&aux)==1){
+            i++;
+            if(i==(cantCaracteres)){
+                palabra[cantCaracteres]='\0';
+                pos=posSimbolo(palabra,vector,n);
+                fprintf(archtnuevo,"%s",vector[pos].codificacion);
+                i=0;
+            }
+            palabra[i]=aux;
+        }
+        palabra[cantCaracteres]='\0';
+        pos=posSimbolo(palabra,vector,n);
+        fprintf(archtnuevo,"%s",vector[pos].codificacion);
+        fclose(archtnuevo);
+    }
 
-void OrdenaPorProbabilidad(TLista *L,int cantTotalApariciones,TListaSF *LSF){
+    fclose(archt);
+}
+
+
+void ShannonFano(nodoSF vector[], int limInf, int limSup){
+    int i;
+    float totProb = 0, probAcum = 0;
+
+    if(limInf != (limSup-1)){
+        for(i=limInf; i<limSup; i++)
+            totProb+= vector[i].probabilidad;
+        i = limInf;
+        while(probAcum < (totProb/2)){
+            probAcum+= vector[i].probabilidad;
+            strcat((vector[i].codificacion),"1");
+            i++;
+        }
+        ShannonFano(vector,limInf,i);
+        int j = i;
+        while(probAcum < totProb){
+            probAcum += vector[j].probabilidad;
+            strcat(vector[j].codificacion,"0");
+            j++;
+        }
+        ShannonFano(vector,i,limSup);
+    }
+}
+
+
+void MuestraSF(nodoSF vec[],int n){
+    printf("\n\n\tsimbolo\t\tprobabilidad\tcodificacionSF");
+    for(int i=0; i<n; i++){
+        printf("\n\t%s\t\t%6.4f\t\t%10s",vec[i].simbolo, vec[i].probabilidad,vec[i].codificacion);
+    }
+}
+
+
+void OrdenaPorProbabilidad(TLista *L,int cantTotalApariciones,nodoSF vector[],int *n){
     //de mayor a menor
     TLista act=(*L);
-    int n=0;
-    nodo vector[1000];
+    (*n)=0;
+
     while(act!=NULL){
-        vector[n]= (*act);
-        n++;
+        vector[(*n)].probabilidad= (float)(act->cantApariciones)/ (float)cantTotalApariciones;
+        strcpy(vector[(*n)].simbolo,act->palabra);
+        strcpy(vector[(*n)].codificacion,"");
+        (*n)++;
         act=act->sig;
     }
 
-    nodo aux;
-    for(int i=0; i<n;i++){//Ordena vector por burbujeo
-        for(int j=0; j<n-1; j++){
-            if(vector[j].cantApariciones<vector[j+1].cantApariciones){
+    nodoSF aux;
+    for(int i=0; i<(*n);i++){//Ordena vector por burbujeo
+        for(int j=0; j<(*n)-1; j++){
+            if(vector[j].probabilidad<vector[j+1].probabilidad){
                 aux=vector[j];
                 vector[j]=vector[j+1];
                 vector[j+1]=aux;
             }
         }
     }
-
-    TListaSF nuevo,ultimo=NULL;
-    for(int i=0; i<n; i++){
-        nuevo=(TListaSF)malloc(sizeof(nodoSF));
-        nuevo->probabilidad= (float)(vector[i].cantApariciones) / (float)cantTotalApariciones;
-        nuevo->sig=NULL;
-        strcpy(nuevo->simbolo,vector[i].palabra);
-        if(ultimo==NULL){
-            (*LSF)=nuevo;
-        }
-        else{
-            ultimo->sig=nuevo;
-        }
-        ultimo=nuevo;
-    }
-
-
 }
 
 void IncisoB(){
-    //---Inciso B------
     printf("\nInciso B");
     float mat [4][4]={{0,0,0,0},
                     {0,0,0,0},
@@ -261,7 +295,6 @@ void CargaMatriz(float mat[][4]){
 
         while(fscanf(archt,"%c",&aux)==1){
             i++;
-            //printf("\n%c",aux);
             if(i==(cantCaracteres)){
                 simbolo[cantCaracteres]='\0';
                 act=Valor(simbolo);
@@ -291,8 +324,6 @@ void MuestraCantidadInformacion(TLista L,int total){
     printf("\n\tSimbolo\t\tInformacion");
     while(L!=NULL){
         prob=(float)(L->cantApariciones)/(float)total;
-        //printf("\n\nP(%s)=%f",L->palabra,prob);
-        //printf("\n%d",L->cantApariciones);
         inf=(-log(prob)/log(2));
         printf("\n\t%s\t\t%f",L->palabra, inf );
         entropia+= (prob * inf);
@@ -326,23 +357,19 @@ void CargaLista(TLista *L, int cantCaracteres,int *cantPalabras){
     else{
         while(fscanf(archt,"%c",&aux)==1){
             i++;
-            //printf("\n%c",aux);
             if(i==(cantCaracteres)){
                 palabra[cantCaracteres]='\0';
                 AgregaPalabra(L,palabra);
                 i=0;
-                palabra[i]=aux;
                 (*cantPalabras)++;
             }
-            else{
-                palabra[i]=aux;
-
-            }
+            palabra[i]=aux;
         }
         (*cantPalabras)++;
         palabra[cantCaracteres]='\0';
         AgregaPalabra(L,palabra);
     }
+    fclose(archt);
 }
 
 void AgregaPalabra(TLista *L, char pal[]){
@@ -357,7 +384,7 @@ void AgregaPalabra(TLista *L, char pal[]){
     }
     else{
         ant=NULL;
-        act=*L;             //strcmp("aaa","bbb")==-1
+        act=*L;
         while(act!=NULL && strcmp(act->palabra,pal)<0 ){
             ant=act;
             act=act->sig;
@@ -374,10 +401,4 @@ void AgregaPalabra(TLista *L, char pal[]){
 }
 
 
-
-//31500 = 5 * 7 * 9 * 100
-
-//32 simbolos para el escenario 1
-//128 símbolos para el escenario 2
-//512 símbolos para el escenario 3
 
