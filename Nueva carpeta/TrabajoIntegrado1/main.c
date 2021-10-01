@@ -23,7 +23,7 @@ typedef struct nodoSF{
 void CargaLista(TLista *L, int cantCaracteres,int *cantPalabras);
 void AgregaPalabra(TLista *L, char pal[]);
 void MuestraLista(TLista L);
-void MuestraCantidadInformacion(TLista L,int total);
+void MuestraCantidadInformacion(TLista L,int total,FILE *archt);
 
 void CargaMatriz(float mat[][4]);
 int Valor(char simbolo[10]);
@@ -32,6 +32,7 @@ void IncisoB();
 void IncisoD();
 void OrdenaPorProbabilidad(TLista *L,int cantTotalApariciones,nodoSF vector[],int *n);
 void MuestraSF(nodoSF vec[],int n);
+void ImprimeSF(nodoSF vec[],int n, FILE *archt);
 void ShannonFano(nodoSF vector[], int limInf, int limSup);
 void ReconstruyeArch(nodoSF vector[], int n, int cantCaracteres,char nombre_Arch[20]);
 
@@ -68,36 +69,55 @@ void IncisoD(){
     printf("\nInciso D\nIngrese el escenario (1, 2 o 3): ");
     scanf("%d",&escenario);
 
+    FILE *archt;
     switch(escenario){
     case 1:
+        archt=fopen("Inciso_D_Escenario1.txt","wt");
+
         printf("\nEscenario 1: Palabras codigo de 5 digitos");
+        fprintf(archt,"Escenario 1: Palabras codigo de 5 digitos");
         CargaLista(&Palabras5,5,&cantPal5);
         int n5;
         OrdenaPorProbabilidad(&Palabras5,cantPal5,ShannonFano5,&n5);
         ShannonFano(ShannonFano5,0,n5);
         printf("\nLa codificacion resultante de Shannon-Fano es:");
+        fprintf(archt,"\nLa codificacion resultante de Shannon-Fano es:");
+        ImprimeSF(ShannonFano5,n5,archt);
         MuestraSF(ShannonFano5,n5);
         ReconstruyeArch(ShannonFano5,n5,5,"reconstruccion_caso1.txt");
+
+        fclose(archt);
     break;
     case 2:
+        archt=fopen("Inciso_D_Escenario2.txt","wt");
+
         printf("\nEscenario 2: Palabras codigo de 7 digitos");
+        fprintf(archt,"Escenario 2: Palabras codigo de 7 digitos");
         CargaLista(&Palabras7,7,&cantPal7);
         int n7;
         OrdenaPorProbabilidad(&Palabras7,cantPal7,ShannonFano7,&n7);
         ShannonFano(ShannonFano7,0,n7);
         printf("\nLa codificacion resultante de Shannon-Fano es:");
+        fprintf(archt,"\nLa codificacion resultante de Shannon-Fano es:");
         MuestraSF(ShannonFano7,n7);
+        ImprimeSF(ShannonFano7,n7,archt);
         ReconstruyeArch(ShannonFano7,n7,7,"reconstruccion_caso2.txt");
+        fclose(archt);
     break;
     case 3:
+        archt=fopen("Inciso_D_Escenario3.txt","wt");
         printf("\nEscenario 3: Palabras codigo de 9 digitos");
+        fprintf(archt,"Escenario 3: Palabras codigo de 9 digitos");
         CargaLista(&Palabras9,9,&cantPal9);
         int n9;
         OrdenaPorProbabilidad(&Palabras9,cantPal9,ShannonFano9,&n9);
         ShannonFano(ShannonFano9,0,n9);
         printf("\nLa codificacion resultante de Shannon-Fano es:");
+        fprintf(archt,"\nLa codificacion resultante de Shannon-Fano es:");
         MuestraSF(ShannonFano9,n9);
+        ImprimeSF(ShannonFano9,n9,archt);
         ReconstruyeArch(ShannonFano9,n9,9,"reconstruccion_caso3.txt");
+        fclose(archt);
     break;
     }
     getch();
@@ -172,6 +192,12 @@ void MuestraSF(nodoSF vec[],int n){
         printf("\n\t%s\t\t%6.4f\t\t%10s",vec[i].simbolo, vec[i].probabilidad,vec[i].codificacion);
     }
 }
+void ImprimeSF(nodoSF vec[],int n, FILE *archt){
+    fprintf(archt,"\n\n\t   simbolo\t\tprobabilidad\tcodificacionSF");
+    for(int i=0; i<n; i++){
+        fprintf(archt,"\n\t%10s\t\t\t%6.4f\t\t%10s",vec[i].simbolo, vec[i].probabilidad,vec[i].codificacion);
+    }
+}
 
 
 void OrdenaPorProbabilidad(TLista *L,int cantTotalApariciones,nodoSF vector[],int *n){
@@ -200,7 +226,11 @@ void OrdenaPorProbabilidad(TLista *L,int cantTotalApariciones,nodoSF vector[],in
 }
 
 void IncisoB(){
+    FILE *archt;
+    archt=fopen("Inciso_B.txt","wt");
+
     printf("\nInciso B");
+    fprintf(archt,"Inciso B");
     float mat [4][4]={{0,0,0,0},
                     {0,0,0,0},
                     {0,0,0,0},
@@ -211,20 +241,34 @@ void IncisoB(){
     printf("\n\n\t00\t\t01\t\t10\t\t11");
     printf("\n\t--------------------------------------------------------");
 
+    fprintf(archt,"\nMatriz de probabilidades condicionales:");
+    fprintf(archt,"\n\n\t00\t\t01\t\t10\t\t11");
+    fprintf(archt,"\n\t--------------------------------------------------------");
     for(int i=0; i<4; i++){
         printf("\n");
-        if(i<2)
+        fprintf(archt,"\n");
+        if(i<2){
             printf("0");
-        else
+            fprintf(archt,"0");
+        }
+        else{
             printf("1");
-        if(i%2==0)
+            fprintf(archt,"1");
+        }
+        if(i%2==0){
             printf("0  |");
-        else
+            fprintf(archt,"0    |");
+        }
+        else{
             printf("1  |");
+            fprintf(archt,"1    |");
+        }
         for(int j=0; j<4; j++){
             printf("\t%8.6f",mat[i][j]);
+            fprintf(archt,"\t%8.6f",mat[i][j]);
         }
     }
+    fclose(archt);
     getch();
 }
 
@@ -236,21 +280,31 @@ void IncisoA(){
     printf("\nInciso A\nIngrese el escenario (1, 2 o 3): ");
     scanf("%d",&escenario);
 
+    FILE *archt;
     switch(escenario){
     case 1:
+        archt=fopen("Inciso_A_Escenario1.txt","wt");
         CargaLista(&Palabras5,5,&cantPal5);
         printf("\nEscenario 1: Palabras codigo de 5 digitos");
-        MuestraCantidadInformacion(Palabras5,cantPal5);
+        fprintf(archt,"Escenario 1: Palabras codigo de 5 digitos");
+        MuestraCantidadInformacion(Palabras5,cantPal5,archt);
+        fclose(archt);
     break;
     case 2:
+        archt=fopen("Inciso_A_Escenario2.txt","wt");
         CargaLista(&Palabras7,7,&cantPal7);
         printf("\nEscenario 2: Palabras codigo de 7 digitos");
-        MuestraCantidadInformacion(Palabras7,cantPal7);
+        fprintf(archt,"Escenario 1: Palabras codigo de 7 digitos");
+        MuestraCantidadInformacion(Palabras7,cantPal7,archt);
+        fclose(archt);
     break;
     case 3:
+        archt=fopen("Inciso_A_Escenario3.txt","wt");
         CargaLista(&Palabras9,9,&cantPal9);
         printf("\nEscenario 3: Palabras codigo de 9 digitos");
-        MuestraCantidadInformacion(Palabras9,cantPal9);
+        fprintf(archt,"Escenario 1: Palabras codigo de 9 digitos");
+        MuestraCantidadInformacion(Palabras9,cantPal9,archt);
+        fclose(archt);
     break;
     }
     getch();
@@ -319,17 +373,20 @@ void CargaMatriz(float mat[][4]){
     }
 }
 
-void MuestraCantidadInformacion(TLista L,int total){
+void MuestraCantidadInformacion(TLista L,int total,FILE *archt){
     float prob,entropia=0,inf;
     printf("\n\tSimbolo\t\tInformacion");
+    fprintf(archt,"\n\n\tSimbolo\t\tInformacion");
     while(L!=NULL){
         prob=(float)(L->cantApariciones)/(float)total;
         inf=(-log(prob)/log(2));
         printf("\n\t%s\t\t%f",L->palabra, inf );
+        fprintf(archt,"\n\t%s\t\t%f",L->palabra, inf);
         entropia+= (prob * inf);
         L=L->sig;
     }
     printf("\n\nEntropia=%f\n",entropia);
+    fprintf(archt,"\n\nEntropia=%f\n",entropia);
 }
 
 void MuestraLista(TLista L){
