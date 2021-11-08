@@ -3,18 +3,24 @@ package compresion;
 import java.io.File;
 import java.util.Scanner;
 
-import algoritmos.RLC;
+import algoritmos.ShannonFano;
 
 public class Prueba {
 
 	public static void main(String[] args) {
 		//System.out.println("Ingrese nombre del archivo:");
 		//Prueba p= new Prueba();
-		RLC.compresionRLC("Argentina.txt");
-		RLC.compresionRLC("Estonio.txt");
-		RLC.compresionRLC("imagen.raw");
+		/*RLC rlc= new RLC();
+		rlc.compresionRLC("Argentina.txt");
+		rlc.compresionRLC("Estonio.txt");
+		rlc.compresionRLC("imagen.raw");*/
 		//p.abrirArchivo("Estonio.txt");
 		//p.abrirArchivo("imagen.raw");
+		System.out.println("Ejecutamo");
+		ShannonFano sF = new ShannonFano();
+		sF.compresionShannonFano("Argentina.txt");
+
+		System.out.println("Salimo");
 	}
 	
 	

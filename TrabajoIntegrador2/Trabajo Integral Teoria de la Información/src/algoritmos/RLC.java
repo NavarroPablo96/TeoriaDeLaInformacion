@@ -20,7 +20,7 @@ public class RLC {
 		    System.out.println("Es .txt");
 		}*/
 
-	public static void compresionRLC(String nombreArchivo) {
+	public void compresionRLC(String nombreArchivo) {
 	    File archivo = null;
 	    FileReader fr = null;
 	    
