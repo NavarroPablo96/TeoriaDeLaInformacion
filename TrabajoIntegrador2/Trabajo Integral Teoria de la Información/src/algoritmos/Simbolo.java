@@ -1,6 +1,6 @@
 package algoritmos;
 
-public class Simbolo implements Comparable,Cloneable{
+public class Simbolo implements Comparable<Simbolo>,Cloneable{
 	private char caracter;
 	private int apariciones;
 	private float probabilidad;
@@ -58,10 +58,19 @@ public class Simbolo implements Comparable,Cloneable{
 		this.codificacion+= caracter;
 	}
 
-	@Override
+	/*@Override
 	public int compareTo(Object o) {
 		Simbolo s= (Simbolo) o;
 		if(this.probabilidad >= s.getProbabilidad() ) {
+			return -1;
+		}
+		else{
+			return 1;
+		}
+	}*/
+	@Override
+	public int compareTo(Simbolo o) {
+		if(this.probabilidad >= o.getProbabilidad() ) {
 			return -1;
 		}
 		else{

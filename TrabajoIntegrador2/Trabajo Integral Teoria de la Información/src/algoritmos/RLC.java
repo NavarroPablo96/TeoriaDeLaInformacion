@@ -2,14 +2,12 @@ package algoritmos;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.PrintWriter;
-import java.util.Scanner;
 
 public class RLC {
 	/*if(nombreArchivo.contains(".raw")) {
