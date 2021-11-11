@@ -17,12 +17,12 @@ public class ShannonFano extends Algoritmo{
 		}
 		
 		generaArchivoComprimido(codificaciones,nombreArchivo,".Fan");
-		System.out.println("PostShannonFano:");
-		
-		for(int i=0; i<listaOrdenada.size();i++) {
-			s= listaOrdenada.get(i);
-			System.out.println(s.getCaracter()+"   \tCod="+codificaciones.get(s.getCaracter()));	
-		}
+		//Mostramos las codificaciones:
+//		System.out.println("PostShannonFano:");
+//		for(int i=0; i<listaOrdenada.size();i++) {
+//			s= listaOrdenada.get(i);
+//			System.out.println(s.getCaracter()+"   \tCod="+codificaciones.get(s.getCaracter()));	
+//		}
 	}
 	
 	private void algoritmoShannonFano(ArrayList<Simbolo>L, int limInf, int limSup) {
@@ -47,6 +47,5 @@ public class ShannonFano extends Algoritmo{
 	        }
 	        algoritmoShannonFano(L,i,limSup);
 		}
-		
 	}
 }

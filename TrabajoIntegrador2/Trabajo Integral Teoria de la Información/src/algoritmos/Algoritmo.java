@@ -23,7 +23,7 @@ public class Algoritmo {
 	}
 	
 	public ArrayList<Simbolo> compresion(String nombreArchivo) {
-		System.out.println("Compresion Huffman");
+		System.out.println("Compresion");
 		File archivo = null;
 	    FileReader fr = null;
 	    this.simbolos = new HashMap<Character,Simbolo>();
@@ -50,7 +50,6 @@ public class Algoritmo {
 			ex.printStackTrace();
 		}
 
-		
 		ArrayList<Simbolo> listaOrdenada= new ArrayList<Simbolo>();
 		for(Simbolo s:simbolos.values()) {
 			listaOrdenada.add(s);
@@ -83,10 +82,6 @@ public class Algoritmo {
 			}
 			byte [] vectorDeBytes;
 			vectorDeBytes = new BigInteger(archivoCodificado,2).toByteArray();
-			/*System.out.println(vectorDeBytes.length);
-			for(int i=vectorDeBytes.length-10; i<vectorDeBytes.length; i++) {
-				System.out.println("vectorDeBytes=["+(int)(vectorDeBytes[i]&0x00FF)+"]");
-			}*/
 			fw.write(vectorDeBytes);
 			
 			fw.close();

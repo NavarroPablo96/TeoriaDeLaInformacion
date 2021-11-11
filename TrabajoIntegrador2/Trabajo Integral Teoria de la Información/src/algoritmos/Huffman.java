@@ -6,39 +6,31 @@ import java.util.HashMap;
 
 public class Huffman extends Algoritmo{
 	
-	
-	
-	
 	public void compresionHuffman(String nombreArchivo) {
-		algoritmoHuffman(super.compresion(nombreArchivo),nombreArchivo);
-	}
-	
-	private void algoritmoHuffman(ArrayList<Simbolo>L,String nombreArchivo) {
+		ArrayList<Simbolo>L = super.compresion(nombreArchivo);
 		System.out.println("AlgoritmoHuffman");
 		Simbolo s;
 		recursivoHuffman(L,L.size()-1);
 		System.out.println("Sale de recursivo");
 		HashMap <Character,String> codificaciones= new HashMap<Character,String>();
 		
-		for(int i=0; i<L.size();i++) {	// cargamos el hashmap Codificaciones
+		for(int i=0; i<L.size();i++) {	// Cargamos el hashmap Codificaciones
 			s= L.get(i);
 			codificaciones.put(s.getCaracter(), s.getCodificacion());
 		}
 		generaArchivoComprimido(codificaciones,nombreArchivo,".Huf");
-		System.out.println("\n\nPost Huffman:");
-		for(int i=0 ; i<L.size(); i++) {// recorremos L, y le actualizamos su codificacion
-			s= L.get(i);
-			//String cod=codificaciones.get(s.getCaracter());
-			//s.setCodificacion(cod);
-			System.out.println(s.getCaracter()+" codi="+s.getCodificacion()+" prob="+s.getProbabilidad());	
-		}
-		
+		// Mostramos las codificaciones:
+//		System.out.println("\n\nPost Huffman:");
+//		for(int i=0 ; i<L.size(); i++) {
+//			s= L.get(i);
+//			System.out.println(s.getCaracter()+" codi="+s.getCodificacion()+" prob="+s.getProbabilidad());	
+//		}
 	}
 	
-	//El arrayList ya está ordenado
+	//El arrayList ya está ordenado:
 	private void recursivoHuffman(ArrayList<Simbolo>auxLista,int n) {
 		Simbolo anteultimo,ultimo;
-		if(n>1) {//mientras haya almenos 2 elementos en el arraylist entra
+		if(n>1) {//mientras haya al menos 2 elementos en el arraylist entra
 			ultimo = auxLista.get(n);
 			anteultimo = auxLista.get(n-1);
 
@@ -53,8 +45,8 @@ public class Huffman extends Algoritmo{
 			Collections.sort(auxLista);
 
 			recursivoHuffman(auxLista,n-1);
-			//Vuelta:--
 
+			//Vuelta:--
 			auxLista.remove(nuevo);
 			ultimo.setCodificacion(nuevo.getCodificacion());
 			ultimo.addCaracter('1');
