@@ -1,76 +1,27 @@
 package algoritmos;
 
-import java.io.File;
-import java.io.FileReader;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 
-public class ShannonFano {
-	
-	private HashMap<Character,Simbolo> simbolos = new HashMap<Character,Simbolo>();
-	//private TreeSet<Simbolo> simbolos = new TreeSet<Simbolo>();
+public class ShannonFano extends Algoritmo{
 	
 	public void compresionShannonFano(String nombreArchivo) {
-		File archivo = null;
-	    FileReader fr = null;
-	    
-		try {
-			int totalSimbolos = 0;
-			archivo = new File (nombreArchivo);
-			fr = new FileReader (archivo);
-			int caracter = fr.read();
-			System.out.println("A VER");
-			while (caracter!=-1) {
-				totalSimbolos++;
-				agregarSimbolo((char)caracter);
-				//System.out.println((char)caracter);
-				caracter = fr.read();
-			}
-			
-			if(totalSimbolos>0) {
-				for(Simbolo s:simbolos.values()) {
-					s.setProbabilidad(s.getApariciones()/(float)totalSimbolos);
-				}
-			}
-			System.out.println("Total="+totalSimbolos);
-			fr.close();
-		}
-		catch(Exception ex) {
-			ex.printStackTrace();
-		}
-
-		
-		ArrayList<Simbolo> listaOrdenada= new ArrayList<Simbolo>();
-		for(Simbolo s:simbolos.values()) {
-			listaOrdenada.add(s);
-			//System.out.println(s.getCaracter()+" "+ s.getApariciones()+" prob="+s.getProbabilidad());
-		}
-
-		
-		Collections.sort(listaOrdenada);
-		System.out.println("Ordenada:");
-		
-		for(int i=0 ; i<listaOrdenada.size(); i++) {
-			Simbolo s= listaOrdenada.get(i);
-			System.out.println(s.getCaracter()+" "+ s.getApariciones()+" prob="+s.getProbabilidad());	
-		}
+		ArrayList<Simbolo> listaOrdenada = super.compresion(nombreArchivo);
 		
 		algoritmoShannonFano(listaOrdenada,0,listaOrdenada.size());
+		HashMap <Character,String> codificaciones= new HashMap<Character,String>();
+		Simbolo s;	
+		for(int i=0; i<listaOrdenada.size();i++) {	// cargamos el hashmap Codificaciones
+			s= listaOrdenada.get(i);
+			codificaciones.put(s.getCaracter(), s.getCodificacion());
+		}
+		
+		generaArchivoComprimido(codificaciones,nombreArchivo,".Fan");
 		System.out.println("PostShannonFano:");
-		for(int i=0 ; i<listaOrdenada.size(); i++) {
-			Simbolo s= listaOrdenada.get(i);
-			System.out.println(s.getCaracter()+" "+ s.getApariciones()+" prob="+s.getProbabilidad()+ "   \tCod="+s.getCodificacion());	
-		}
-	}
-	
-	public void agregarSimbolo(char caracter) {
-		if(simbolos.containsKey(caracter)) {
-			simbolos.get(caracter).incrementarApariciones();
-		}
-		else {
-			Simbolo nuevo = new Simbolo(caracter);
-			simbolos.put(caracter,nuevo);
+		
+		for(int i=0; i<listaOrdenada.size();i++) {
+			s= listaOrdenada.get(i);
+			System.out.println(s.getCaracter()+"   \tCod="+codificaciones.get(s.getCaracter()));	
 		}
 	}
 	
@@ -98,155 +49,4 @@ public class ShannonFano {
 		}
 		
 	}
-	
-	public void compresionHuffman(String nombreArchivo) {
-		File archivo = null;
-	    FileReader fr = null;
-	    
-		try {
-			int totalSimbolos = 0;
-			archivo = new File (nombreArchivo);
-			fr = new FileReader (archivo);
-			int caracter = fr.read();
-			System.out.println("A VER");
-			while (caracter!=-1) {
-				totalSimbolos++;
-				agregarSimbolo((char)caracter);
-				//System.out.println((char)caracter);
-				caracter = fr.read();
-			}
-			
-			if(totalSimbolos>0) {
-				for(Simbolo s:simbolos.values()) {
-					s.setProbabilidad(s.getApariciones()/(float)totalSimbolos);
-				}
-			}
-			System.out.println("Total="+totalSimbolos);
-			fr.close();
-		}
-		catch(Exception ex) {
-			ex.printStackTrace();
-		}
-
-		
-		ArrayList<Simbolo> listaOrdenada= new ArrayList<Simbolo>();
-		for(Simbolo s:simbolos.values()) {
-			listaOrdenada.add(s);
-			//System.out.println(s.getCaracter()+" "+ s.getApariciones()+" prob="+s.getProbabilidad());
-		}
-		Collections.sort(listaOrdenada);
-		System.out.println("Ordenada:");
-		
-		for(int i=0 ; i<listaOrdenada.size(); i++) {
-			Simbolo s= listaOrdenada.get(i);
-			System.out.println(s.getCaracter()+" "+ s.getApariciones()+" prob="+s.getProbabilidad());	
-		}
-		
-		algoritmoHuffman(listaOrdenada);
-	}
-	
-	private void algoritmoHuffman(ArrayList<Simbolo>L) {
-		//aca se clona
-		ArrayList<Simbolo>auxLista = new ArrayList<Simbolo>() ;
-
-		for(int i=0 ; i<L.size(); i++) {
-			Simbolo s= new Simbolo();
-			try {
-				s=(Simbolo) (L.get(i)).clone();
-				auxLista.add(s);
-			} catch (CloneNotSupportedException e) {
-				e.printStackTrace();
-			}
-		}
-		
-		recursivoHuffman(L,auxLista,auxLista.size()-1);
-		System.out.println("\n\nPost Huffman:");
-		for(int i=0 ; i<auxLista.size(); i++) {
-			Simbolo s= auxLista.get(i);
-			System.out.println(s.getCaracter()+" codi="+s.getCodificacion()+" prob="+s.getProbabilidad());	
-		}
-	}
-	
-	//supone ArrayList probabilidades Ordenado
-	private void recursivoHuffman(ArrayList<Simbolo>L,ArrayList<Simbolo>auxLista,int n) {
-		Simbolo anteultimo,ultimo;
-		if(n>1) {//mientras haya almenos 2 elementos en el arraylist entra
-			ultimo = auxLista.get(n);
-			anteultimo = auxLista.get(n-1);
-			
-			//System.out.println("ultimio\t"+(char)ultimo.getCaracter() +"\t" + ultimo.getProbabilidad());
-			//System.out.println("anteult\t" + (char)anteultimo.getCaracter()+ "\t" + anteultimo.getProbabilidad());
-			
-			Simbolo nuevo = new Simbolo('<'); // cualquier caracter
-			nuevo.setProbabilidad(ultimo.getProbabilidad() + anteultimo.getProbabilidad());
-			
-			auxLista.remove(ultimo);
-			auxLista.remove(anteultimo);
-
-			auxLista.add(nuevo);
-			
-			Collections.sort(auxLista);
-			/*for(int i=0 ; i<auxLista.size(); i++) {
-				Simbolo s= auxLista.get(i);
-				System.out.println(s.getCaracter()+" prob="+s.getProbabilidad());	
-			}*/
-			
-			
-			recursivoHuffman(L,auxLista,n-1);
-			//Vuelta:--
-
-			auxLista.remove(nuevo);
-			ultimo.setCodificacion(nuevo.getCodificacion());
-			ultimo.addCaracter('1');
-			anteultimo.setCodificacion(nuevo.getCodificacion());
-			anteultimo.addCaracter('0');
-			auxLista.add(anteultimo);
-			auxLista.add(ultimo);
-			Collections.sort(auxLista);
-			/*for(int i=0 ; i<auxLista.size(); i++) {
-				Simbolo s= auxLista.get(i);
-				System.out.println(s.getCaracter()+" prob="+s.getProbabilidad()+" COD="+s.getCodificacion());	
-			}
-			Scanner leer=new Scanner(System.in); 
-			int num = leer.nextInt();*/
-		}
-		else { //n==1
-			auxLista.get(1).addCaracter('1');
-			auxLista.get(0).addCaracter('0');
-			/*System.out.println("Fin recursividad");
-			for(int i=0 ; i<auxLista.size(); i++) {
-				Simbolo s= auxLista.get(i);
-				System.out.println(s.getCaracter()+" prob="+s.getProbabilidad()+" COD="+s.getCodificacion());	
-			}*/
-		}
-	}
-	
-	
-	/*
-		void ShannonFano(nodoSF vector[], int limInf, int limSup){
-		    int i;
-		    float totProb = 0, probAcum = 0;
-		
-		    if(limInf != (limSup-1)){
-		        for(i=limInf; i<limSup; i++)
-		            totProb+= vector[i].probabilidad;
-		        i = limInf;
-		        while(probAcum < (totProb/2)){
-		            probAcum+= vector[i].probabilidad;
-		            strcat((vector[i].codificacion),"1");
-		            i++;
-		        }
-		        ShannonFano(vector,limInf,i);
-		        int j = i;
-		        while(probAcum < totProb){
-		            probAcum += vector[j].probabilidad;
-		            strcat(vector[j].codificacion,"0");
-		            j++;
-		        }
-		        ShannonFano(vector,i,limSup);
-		    }
-		}
-	 * */
-	
-	
 }
