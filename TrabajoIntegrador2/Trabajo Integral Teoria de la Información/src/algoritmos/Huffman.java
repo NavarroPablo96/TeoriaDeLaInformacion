@@ -12,6 +12,8 @@ public class Huffman extends Algoritmo{
 		Simbolo s;
 		recursivoHuffman(L,L.size()-1);
 		System.out.println("Sale de recursivo");
+		super.calculaEntropia(L);
+		super.calculaLongMedia(L);
 		HashMap <Character,String> codificaciones= new HashMap<Character,String>();
 		
 		for(int i=0; i<L.size();i++) {	// Cargamos el hashmap Codificaciones
@@ -27,7 +29,7 @@ public class Huffman extends Algoritmo{
 //		}
 	}
 	
-	//El arrayList ya está ordenado:
+	//El arrayList ya estï¿½ ordenado:
 	private void recursivoHuffman(ArrayList<Simbolo>auxLista,int n) {
 		Simbolo anteultimo,ultimo;
 		if(n>1) {//mientras haya al menos 2 elementos en el arraylist entra

@@ -9,6 +9,8 @@ public class ShannonFano extends Algoritmo{
 		ArrayList<Simbolo> listaOrdenada = super.compresion(nombreArchivo);
 		
 		algoritmoShannonFano(listaOrdenada,0,listaOrdenada.size());
+		super.calculaEntropia(listaOrdenada);
+		super.calculaLongMedia(listaOrdenada);
 		HashMap <Character,String> codificaciones= new HashMap<Character,String>();
 		Simbolo s;	
 		for(int i=0; i<listaOrdenada.size();i++) {	// cargamos el hashmap Codificaciones

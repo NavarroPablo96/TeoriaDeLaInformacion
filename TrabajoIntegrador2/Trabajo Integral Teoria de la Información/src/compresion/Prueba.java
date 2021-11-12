@@ -7,7 +7,6 @@ import algoritmos.ShannonFano;
 public class Prueba {
 
 	public static void main(String[] args) {
-		System.out.println("Ejecutamo");
 		
 		RLC rlc= new RLC();
 		rlc.compresionRLC("Argentina.txt");
@@ -15,14 +14,17 @@ public class Prueba {
 		rlc.compresionRLC("imagen.raw");
 		
 		ShannonFano sF = new ShannonFano();
-		sF.compresionShannonFano("Argentina.txt");
-		sF.compresionShannonFano("Estonio.txt");
+//		System.out.println("Argentina.txt:");
+//		sF.compresionShannonFano("Argentina.txt");
+//		System.out.println("Estonio.txt:");
+//		sF.compresionShannonFano("Estonio.txt");
 		sF.compresionShannonFano("imagen.raw");
 		
 		Huffman Hm = new Huffman();
-		Hm.compresionHuffman("Argentina.txt");
-		Hm.compresionHuffman("Estonio.txt");
+//		System.out.println("Argentina.txt:");
+//		Hm.compresionHuffman("Argentina.txt");
+//		System.out.println("Estonio.txt:");
+//		Hm.compresionHuffman("Estonio.txt");
 		Hm.compresionHuffman("imagen.raw");
-		System.out.println("Salimos");
 	}
 }

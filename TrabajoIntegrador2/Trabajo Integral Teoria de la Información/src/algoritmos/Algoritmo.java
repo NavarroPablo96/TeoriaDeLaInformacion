@@ -91,4 +91,25 @@ public class Algoritmo {
 			ex.printStackTrace();
 		}
 	}
+	
+	public void calculaEntropia(ArrayList<Simbolo> L) {
+		float suma = 0;
+		
+		for(int i = 0; i<L.size(); i++) {
+			suma += L.get(i).getProbabilidad() * (Math.log10(L.get(i).getProbabilidad())/Math.log10(2)) * -1;
+		}
+		
+		System.out.println("Entropía= " + suma);
+	}
+	
+	public void calculaLongMedia(ArrayList<Simbolo> L) {
+		float suma = 0;
+		
+		for(int i = 0; i<L.size(); i++) {
+			suma += L.get(i).getProbabilidad() * L.get(i).getCodificacion().length();
+		}
+		
+		System.out.println("Longitud Media= " + suma);
+	}
+
 }
