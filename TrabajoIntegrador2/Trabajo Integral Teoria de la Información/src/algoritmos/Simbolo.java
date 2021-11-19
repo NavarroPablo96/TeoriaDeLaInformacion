@@ -11,6 +11,13 @@ public class Simbolo implements Comparable<Simbolo>{
 		this.apariciones=1;
 		this.probabilidad=0;
 	}
+	
+	public Simbolo(String codificacion){
+		this.codificacion=codificacion;
+		this.apariciones=1;
+		this.probabilidad=0;
+	}
+	
 	public Simbolo(){
 	}
 	
